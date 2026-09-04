@@ -352,14 +352,39 @@ function toast(msg){
   t._timer = setTimeout(()=> t.classList.remove('show'), 2200);
 }
 
-// ⚠️ حط بيانات مشروعك من Supabase هنا (Settings → API)
+/* ---------- Supabase ---------- */
 const SUPABASE_URL = 'https://abraxozrvnigjoglfeso.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_z7A1NcoJbLh2BsP3vEwMvw_HNphWm7N';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// تعريف واحد فقط للعميل، لتجنب خطأ: Identifier 'supabase' has already been declared
+let supabaseClient = null;
+
+function initSupabase(){
+  if(!window.supabase || typeof window.supabase.createClient !== 'function'){
+    console.error('Supabase library failed to load');
+    toast('فشل تحميل مكتبة Supabase. تأكد من الإنترنت ثم أعد تحميل الصفحة');
+    return false;
+  }
+
+  try{
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('Supabase initialized successfully');
+    return true;
+  }catch(error){
+    console.error('Supabase initialization error:', error);
+    toast('حدث خطأ أثناء تشغيل Supabase');
+    return false;
+  }
+}
 
 async function loadProducts(){
+  if(!supabaseClient){
+    products = [];
+    render();
+    return;
+  }
   try{
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('products')
       .select('*')
       .order('created_at', { ascending: true });
@@ -372,8 +397,9 @@ async function loadProducts(){
       barcodes: p.barcodes || []
     }));
   }catch(e){
+    console.error('Load products error:', e);
     products = [];
-    toast('مقدرش أجيب البيانات من Supabase، تأكد من إعدادات الاتصال');
+    toast('مقدرش أجيب البيانات من Supabase: ' + (e.message || 'خطأ غير معروف'));
   }
   render();
 }
@@ -532,13 +558,13 @@ async function saveProduct(){
 
   try{
     if(editingId){
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from('products')
         .update({ name, price: Number(price), photo, barcodes })
         .eq('id', editingId);
       if(error) throw error;
     }else{
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from('products')
         .insert({
           id: Date.now().toString(36) + Math.random().toString(36).slice(2,7),
@@ -550,7 +576,8 @@ async function saveProduct(){
     closeProductModal();
     toast('تم الحفظ');
   }catch(e){
-    toast('حصلت مشكلة في الحفظ على Supabase');
+    console.error('Save product error:', e);
+    toast('مشكلة في الحفظ: ' + (e.message || 'خطأ غير معروف'));
   }
 }
 
@@ -558,13 +585,14 @@ async function deleteProduct(){
   if(!editingId) return;
   if(!confirm('متأكد إنك عايز تحذف المنتج ده؟')) return;
   try{
-    const { error } = await supabase.from('products').delete().eq('id', editingId);
+    const { error } = await supabaseClient.from('products').delete().eq('id', editingId);
     if(error) throw error;
     await loadProducts();
     closeProductModal();
     toast('تم الحذف');
   }catch(e){
-    toast('حصلت مشكلة في الحذف');
+    console.error('Delete product error:', e);
+    toast('مشكلة في الحذف: ' + (e.message || 'خطأ غير معروف'));
   }
 }
 
@@ -675,7 +703,11 @@ function closeScanner(){
   }
 }
 
-loadProducts();
+if(initSupabase()){
+  loadProducts();
+}else{
+  render();
+}
 </script>
 </body>
 </html>
