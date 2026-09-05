@@ -255,9 +255,12 @@
   <div class="search-wrap">
     <input type="text" id="searchInput" placeholder="دور بالاسم أو رقم الباركود...">
     <svg class="search-ic" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    <button class="scan-search-btn" onclick="openScanner('search')" title="دور بالباركود">
+    <button class="scan-search-btn" onclick="capturePhotoForBarcode('search')" title="دور بالباركود">
       <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M4 7V5a1 1 0 0 1 1-1h2M20 7V5a1 1 0 0 0-1-1h-2M4 17v2a1 1 0 0 0 1 1h2M20 17v2a1 1 0 0 1-1 1h-2M4 12h16" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
     </button>
+  </div>
+  <div style="text-align:left; margin-top:6px;">
+    <button type="button" onclick="openScanner('search')" style="border:none; background:none; color:var(--ink-soft); font-size:11.5px; font-weight:600; text-decoration:underline; padding:2px;">أو جرّب المسح المباشر بالفيديو</button>
   </div>
 </header>
 
@@ -302,11 +305,14 @@
           <button type="button" class="btn-add-manual" onclick="addManualBarcode()">إضافة</button>
         </div>
         <div class="barcode-row" style="margin-top:8px;">
-          <button type="button" class="btn-scan-inline" style="flex:1; justify-content:center;" onclick="openScanner('add')">
+          <button type="button" class="btn-scan-inline" style="flex:1; justify-content:center;" onclick="capturePhotoForBarcode('add')">
             <svg viewBox="0 0 24 24" fill="none"><path d="M4 7V5a1 1 0 0 1 1-1h2M20 7V5a1 1 0 0 0-1-1h-2M4 17v2a1 1 0 0 0 1 1h2M20 17v2a1 1 0 0 1-1 1h-2M4 12h16" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
-            امسح الباركود بالكاميرا
+            صوّر الباركود
           </button>
         </div>
+        <p style="text-align:center; margin:6px 0 0;">
+          <button type="button" onclick="openScanner('add')" style="border:none; background:none; color:var(--ink-soft); font-size:11.5px; font-weight:600; text-decoration:underline; padding:2px;">أو جرّب المسح المباشر بالفيديو</button>
+        </p>
         <p class="hint">تقدر تضيف أكتر من باركود لنفس المنتج — مفيد لو نفس الصنف بيجيلك بأكتر من نوع تغليف أو من أكتر من مورد.</p>
       </div>
     </div>
@@ -330,6 +336,8 @@
     <button class="btn-secondary" style="flex:1;" onclick="closeScanner()">إلغاء</button>
   </div>
 </div>
+
+<input type="file" accept="image/*" capture="environment" id="barcodePhotoInput" style="display:none;" onchange="handleBarcodePhotoCapture(event)">
 
 <div id="toast"></div>
 
@@ -653,40 +661,41 @@ function scanFrame(){
   if(!scannerActive) return;
 
   if(scannerVideoEl.readyState >= 2 && scannerVideoEl.videoWidth > 0){
-    scannerCanvas.width = scannerVideoEl.videoWidth;
-    scannerCanvas.height = scannerVideoEl.videoHeight;
+    // Downscaling before encoding keeps each attempt fast, so we get many
+    // more tries per second — the best way to "catch" a sharp frame when
+    // we can't control focus directly.
+    const targetW = 720;
+    const scale = Math.min(1, targetW / scannerVideoEl.videoWidth);
+    scannerCanvas.width = scannerVideoEl.videoWidth * scale;
+    scannerCanvas.height = scannerVideoEl.videoHeight * scale;
     scannerCtx.drawImage(scannerVideoEl, 0, 0, scannerCanvas.width, scannerCanvas.height);
-    const dataUrl = scannerCanvas.toDataURL('image/jpeg', 0.85);
+    const dataUrl = scannerCanvas.toDataURL('image/jpeg', 0.8);
 
     Quagga.decodeSingle({
       src: dataUrl,
       numOfWorkers: 0,
       locate: true,
-      inputStream: { size: 800 },
+      inputStream: { size: scannerCanvas.width },
       decoder: { readers: BARCODE_READERS }
     }, function(result){
       if(!scannerActive) return;
       if(result && result.codeResult && result.codeResult.code){
-        onBarcodeDetected(result.codeResult.code);
+        handleScanResult(result.codeResult.code, scannerMode);
+        closeScanner();
       }else{
-        scannerTimer = setTimeout(scanFrame, 320);
+        scannerTimer = setTimeout(scanFrame, 120);
       }
     });
   }else{
-    scannerTimer = setTimeout(scanFrame, 200);
+    scannerTimer = setTimeout(scanFrame, 150);
   }
 }
 
-function onBarcodeDetected(code){
-  if(!scannerActive) return;
-  scannerActive = false; // debounce single read
-
-  if(scannerMode === 'add'){
+function handleScanResult(code, mode){
+  if(mode === 'add'){
     addBarcodeValue(code);
-    closeScanner();
-  }else if(scannerMode === 'search'){
+  }else if(mode === 'search'){
     const found = products.find(p => p.barcodes.includes(code));
-    closeScanner();
     if(found){
       openProductModal(found.id);
     }else{
@@ -695,6 +704,58 @@ function onBarcodeDetected(code){
       toast('مفيش منتج مسجل بالرقم ده');
     }
   }
+}
+
+/* ---------- Photo-capture scanning (recommended on iPhone) ----------
+   This opens the device's real camera app via a file input, which has
+   full native autofocus — unlike a live getUserMedia video feed, whose
+   focus the browser can't control on iOS. Take one sharp photo, we
+   decode it once. Far more reliable than the live scanner above. */
+let photoCaptureMode = null;
+
+function capturePhotoForBarcode(mode){
+  photoCaptureMode = mode;
+  const input = document.getElementById('barcodePhotoInput');
+  input.value = '';
+  input.click();
+}
+
+function handleBarcodePhotoCapture(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  toast('بيتم تحليل الصورة...');
+
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    const img = new Image();
+    img.onload = function(){
+      const maxW = 1400;
+      const scale = Math.min(1, maxW / img.width);
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+
+      Quagga.decodeSingle({
+        src: dataUrl,
+        numOfWorkers: 0,
+        locate: true,
+        inputStream: { size: canvas.width },
+        decoder: { readers: BARCODE_READERS }
+      }, function(result){
+        if(result && result.codeResult && result.codeResult.code){
+          handleScanResult(result.codeResult.code, photoCaptureMode);
+          toast('تم قراءة الباركود بنجاح');
+        }else{
+          toast('مقدرش أقرا رقم من الصورة — جرب تقرّب أكتر أو تحسّن الإضاءة وصوّر تاني');
+        }
+      });
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 function closeScanner(){
