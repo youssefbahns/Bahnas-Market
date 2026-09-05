@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.6.14/quagga.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --paper:#F5F6F0;
@@ -332,6 +331,7 @@
 <div id="toast"></div>
 
 <script>
+const STORAGE_KEY = 'skm-products';
 let products = [];
 let editingId = null;
 let currentBarcodes = [];
@@ -352,56 +352,22 @@ function toast(msg){
   t._timer = setTimeout(()=> t.classList.remove('show'), 2200);
 }
 
-/* ---------- Supabase ---------- */
-const SUPABASE_URL = 'https://abraxozrvnigjoglfeso.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_z7A1NcoJbLh2BsP3vEwMvw_HNphWm7N';
-
-// تعريف واحد فقط للعميل، لتجنب خطأ: Identifier 'supabase' has already been declared
-let supabaseClient = null;
-
-function initSupabase(){
-  if(!window.supabase || typeof window.supabase.createClient !== 'function'){
-    console.error('Supabase library failed to load');
-    toast('فشل تحميل مكتبة Supabase. تأكد من الإنترنت ثم أعد تحميل الصفحة');
-    return false;
-  }
-
-  try{
-    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    console.log('Supabase initialized successfully');
-    return true;
-  }catch(error){
-    console.error('Supabase initialization error:', error);
-    toast('حدث خطأ أثناء تشغيل Supabase');
-    return false;
-  }
-}
-
 async function loadProducts(){
-  if(!supabaseClient){
-    products = [];
-    render();
-    return;
-  }
   try{
-    const { data, error } = await supabaseClient
-      .from('products')
-      .select('*')
-      .order('created_at', { ascending: true });
-    if(error) throw error;
-    products = (data || []).map(p => ({
-      id: p.id,
-      name: p.name,
-      price: Number(p.price),
-      photo: p.photo,
-      barcodes: p.barcodes || []
-    }));
+    const res = await window.storage.get(STORAGE_KEY, false);
+    products = res && res.value ? JSON.parse(res.value) : [];
   }catch(e){
-    console.error('Load products error:', e);
     products = [];
-    toast('مقدرش أجيب البيانات من Supabase: ' + (e.message || 'خطأ غير معروف'));
   }
   render();
+}
+
+async function saveProducts(){
+  try{
+    await window.storage.set(STORAGE_KEY, JSON.stringify(products), false);
+  }catch(e){
+    toast('حصلت مشكلة في الحفظ');
+  }
 }
 
 function render(){
@@ -548,52 +514,36 @@ function addBarcodeValue(val){
   toast('تم إضافة الباركود');
 }
 
-async function saveProduct(){
+function saveProduct(){
   const name = document.getElementById('nameInput').value.trim();
   const price = document.getElementById('priceInput').value;
   if(!name){ toast('اكتب اسم المنتج'); return; }
   if(price === '' || Number(price) < 0){ toast('اكتب سعر صحيح'); return; }
   const photo = document.getElementById('photoPreview').dataset.value || null;
-  const barcodes = [...currentBarcodes];
 
-  try{
-    if(editingId){
-      const { error } = await supabaseClient
-        .from('products')
-        .update({ name, price: Number(price), photo, barcodes })
-        .eq('id', editingId);
-      if(error) throw error;
-    }else{
-      const { error } = await supabaseClient
-        .from('products')
-        .insert({
-          id: Date.now().toString(36) + Math.random().toString(36).slice(2,7),
-          name, price: Number(price), photo, barcodes
-        });
-      if(error) throw error;
-    }
-    await loadProducts();
-    closeProductModal();
-    toast('تم الحفظ');
-  }catch(e){
-    console.error('Save product error:', e);
-    toast('مشكلة في الحفظ: ' + (e.message || 'خطأ غير معروف'));
+  if(editingId){
+    const p = products.find(x => x.id === editingId);
+    p.name = name; p.price = Number(price); p.photo = photo; p.barcodes = [...currentBarcodes];
+  }else{
+    products.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2,7),
+      name, price: Number(price), photo, barcodes: [...currentBarcodes]
+    });
   }
+  saveProducts();
+  render();
+  closeProductModal();
+  toast('تم الحفظ');
 }
 
-async function deleteProduct(){
+function deleteProduct(){
   if(!editingId) return;
   if(!confirm('متأكد إنك عايز تحذف المنتج ده؟')) return;
-  try{
-    const { error } = await supabaseClient.from('products').delete().eq('id', editingId);
-    if(error) throw error;
-    await loadProducts();
-    closeProductModal();
-    toast('تم الحذف');
-  }catch(e){
-    console.error('Delete product error:', e);
-    toast('مشكلة في الحذف: ' + (e.message || 'خطأ غير معروف'));
-  }
+  products = products.filter(p => p.id !== editingId);
+  saveProducts();
+  render();
+  closeProductModal();
+  toast('تم الحذف');
 }
 
 /* ---------- Scanner ----------
@@ -703,11 +653,7 @@ function closeScanner(){
   }
 }
 
-if(initSupabase()){
-  loadProducts();
-}else{
-  render();
-}
+loadProducts();
 </script>
 </body>
 </html>
