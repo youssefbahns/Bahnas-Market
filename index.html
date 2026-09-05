@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+
 <title>منتجاتي</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
+
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Barcode Scanner -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.6.14/quagga.min.js"></script>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
 <style>
-  :root{
+
+:root{
     --paper:#F5F6F0;
     --paper-2:#ECEEE4;
     --ink:#1E2119;
@@ -19,756 +34,3018 @@
     --mustard:#DDA332;
     --line:#D8DACB;
     --radius:14px;
-  }
-  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
-  html,body{margin:0; padding:0;}
-  body{
+}
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+}
+
+body{
     background:var(--paper);
     color:var(--ink);
-    font-family:'Tajawal', sans-serif;
+    font-family:'Tajawal',sans-serif;
     min-height:100vh;
-    padding-bottom: calc(88px + env(safe-area-inset-bottom));
+    padding-bottom:calc(88px + env(safe-area-inset-bottom));
     -webkit-font-smoothing:antialiased;
-  }
-  button{font-family:inherit; cursor:pointer;}
-  input{font-family:inherit;}
+}
 
-  /* ---------- Top bar ---------- */
-  .topbar{
-    position:sticky; top:0; z-index:20;
-    background:rgba(245,246,240,0.92);
+button{
+    font-family:inherit;
+    cursor:pointer;
+}
+
+input{
+    font-family:inherit;
+}
+
+
+/* ================= TOP BAR ================= */
+
+.topbar{
+
+    position:sticky;
+    top:0;
+    z-index:20;
+
+    background:rgba(245,246,240,.92);
+
     backdrop-filter:blur(10px);
-    padding: calc(14px + env(safe-area-inset-top)) 16px 12px;
+
+    padding:
+    calc(14px + env(safe-area-inset-top))
+    16px
+    12px;
+
     border-bottom:1px solid var(--line);
-  }
-  .topbar-row{display:flex; align-items:center; gap:10px;}
-  .logo{display:flex; align-items:center; gap:8px; flex:1;}
-  .logo svg{width:26px; height:26px; flex-shrink:0;}
-  .logo h1{font-size:19px; font-weight:800; margin:0; letter-spacing:-0.2px;}
-  .count-badge{
-    font-size:12px; font-weight:700; color:var(--green-deep);
-    background:#E1E8DA; padding:3px 9px; border-radius:20px;
-  }
-  .search-wrap{
-    margin-top:10px; position:relative;
-  }
-  .search-wrap input{
-    width:100%; border:1px solid var(--line); background:#fff;
-    border-radius:11px; padding:11px 42px 11px 14px; font-size:16px;
-    color:var(--ink); outline:none;
-  }
-  .search-wrap input:focus{border-color:var(--green);}
-  .search-wrap .scan-search-btn{
-    position:absolute; left:5px; top:50%; transform:translateY(-50%);
-    width:34px; height:34px; border-radius:9px; border:none;
-    background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center;
-  }
-  .search-wrap svg.search-ic{
-    position:absolute; right:14px; top:50%; transform:translateY(-50%);
-    width:17px; height:17px; color:var(--ink-soft);
-  }
+}
 
-  /* ---------- Grid ---------- */
-  #grid{
-    padding:16px; display:grid;
-    grid-template-columns:repeat(2, 1fr);
+.topbar-row{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+}
+
+.logo{
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex:1;
+
+}
+
+.logo svg{
+
+    width:26px;
+    height:26px;
+    flex-shrink:0;
+
+}
+
+.logo h1{
+
+    font-size:19px;
+    font-weight:800;
+    margin:0;
+
+}
+
+.count-badge{
+
+    font-size:12px;
+    font-weight:700;
+
+    color:var(--green-deep);
+
+    background:#E1E8DA;
+
+    padding:3px 9px;
+
+    border-radius:20px;
+
+}
+
+.search-wrap{
+
+    margin-top:10px;
+    position:relative;
+
+}
+
+.search-wrap input{
+
+    width:100%;
+
+    border:1px solid var(--line);
+
+    background:#fff;
+
+    border-radius:11px;
+
+    padding:11px 42px 11px 14px;
+
+    font-size:16px;
+
+    color:var(--ink);
+
+    outline:none;
+
+}
+
+.search-wrap input:focus{
+
+    border-color:var(--green);
+
+}
+
+.search-wrap .scan-search-btn{
+
+    position:absolute;
+
+    left:5px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:34px;
+    height:34px;
+
+    border-radius:9px;
+
+    border:none;
+
+    background:var(--green);
+
+    color:#fff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.search-wrap svg.search-ic{
+
+    position:absolute;
+
+    right:14px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:17px;
+
+    height:17px;
+
+    color:var(--ink-soft);
+
+}
+
+
+/* ================= GRID ================= */
+
+#grid{
+
+    padding:16px;
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
     gap:12px;
-  }
-  @media(min-width:520px){ #grid{grid-template-columns:repeat(3,1fr);} }
-  @media(min-width:760px){ #grid{grid-template-columns:repeat(4,1fr);} }
-  @media(min-width:980px){ #grid{grid-template-columns:repeat(5,1fr);} }
 
-  .card{
-    background:#fff; border:1px solid var(--line); border-radius:var(--radius);
-    overflow:hidden; position:relative; text-align:right;
-    display:flex; flex-direction:column;
+}
+
+@media(min-width:520px){
+
+    #grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+}
+
+@media(min-width:760px){
+
+    #grid{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+}
+
+@media(min-width:980px){
+
+    #grid{
+        grid-template-columns:repeat(5,1fr);
+    }
+
+}
+
+
+/* ================= CARD ================= */
+
+.card{
+
+    background:#fff;
+
+    border:1px solid var(--line);
+
+    border-radius:var(--radius);
+
+    overflow:hidden;
+
+    position:relative;
+
+    text-align:right;
+
+    display:flex;
+
+    flex-direction:column;
+
     transition:transform .12s ease;
-  }
-  .card:active{transform:scale(0.97);}
-  .card-photo{
-    aspect-ratio:1/1; background:var(--paper-2);
-    display:flex; align-items:center; justify-content:center; overflow:hidden;
-  }
-  .card-photo img{width:100%; height:100%; object-fit:cover; display:block;}
-  .card-photo svg{width:34%; height:34%; color:#B7BCA8;}
-  .card-info{padding:9px 11px 12px; position:relative;}
-  .card-name{
-    font-size:13.5px; font-weight:700; margin:0 0 4px; line-height:1.3;
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+
+}
+
+.card:active{
+
+    transform:scale(.97);
+
+}
+
+.card-photo{
+
+    aspect-ratio:1/1;
+
+    background:var(--paper-2);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    overflow:hidden;
+
+    position:relative;
+
+}
+
+.card-photo img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+    display:block;
+
+}
+
+.card-photo svg{
+
+    width:34%;
+
+    height:34%;
+
+    color:#B7BCA8;
+
+}
+
+.card-info{
+
+    padding:9px 11px 12px;
+
+    position:relative;
+
+}
+
+.card-name{
+
+    font-size:13.5px;
+
+    font-weight:700;
+
+    margin:0 0 4px;
+
+    line-height:1.3;
+
+    display:-webkit-box;
+
+    -webkit-line-clamp:2;
+
+    -webkit-box-orient:vertical;
+
+    overflow:hidden;
+
     min-height:2.4em;
-  }
-  .card-price{font-size:15px; font-weight:800; color:var(--green-deep); margin:0;}
-  .card-price::after{content:" ج.م"; font-size:11px; font-weight:600; color:var(--ink-soft);}
-  .card-barcount{
-    position:absolute; top:-30px; left:9px; background:var(--ink);
-    color:#fff; font-size:10px; font-weight:700; padding:3px 7px; border-radius:6px;
-    display:flex; align-items:center; gap:3px;
-  }
-  .card-barcount svg{width:10px; height:10px;}
 
-  /* Price-tag notch */
-  .card-photo{position:relative;}
-  .notch{
-    position:absolute; top:-7px; right:14px; width:14px; height:14px;
-    background:var(--paper); border-radius:50%; border:1px solid var(--line); z-index:2;
-  }
+}
 
-  .empty-state{
-    grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--ink-soft);
-  }
-  .empty-state svg{width:64px; height:64px; margin-bottom:14px; color:#C4C9B6;}
-  .empty-state p{margin:0; font-size:14.5px; line-height:1.6;}
-  .empty-state strong{display:block; font-size:16.5px; color:var(--ink); margin-bottom:6px;}
+.card-price{
 
-  /* ---------- FAB ---------- */
-  .fab{
-    position:fixed; bottom:calc(22px + env(safe-area-inset-bottom)); left:18px; z-index:25;
-    width:58px; height:58px; border-radius:50%; border:none;
-    background:var(--green); color:#fff; box-shadow:0 6px 18px rgba(39,78,49,0.35);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .fab svg{width:26px; height:26px;}
-  .fab:active{transform:scale(0.93);}
+    font-size:15px;
 
-  /* ---------- Modal ---------- */
-  .modal-overlay{
-    position:fixed; inset:0; background:rgba(20,22,16,0.5); z-index:50;
-    display:none; align-items:flex-end; justify-content:center;
-  }
-  .modal-overlay.open{display:flex;}
-  .modal{
-    background:var(--paper); width:100%; max-width:560px; max-height:92vh;
-    border-radius:20px 20px 0 0; overflow-y:auto;
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));
-    animation:slideUp .22s ease-out;
-  }
-  @keyframes slideUp{from{transform:translateY(24px); opacity:0;} to{transform:translateY(0); opacity:1;}}
-  .modal-header{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:16px 18px 6px; position:sticky; top:0; background:var(--paper); z-index:2;
-  }
-  .modal-header h2{font-size:18px; margin:0; font-weight:800;}
-  .icon-btn{
-    width:34px; height:34px; border-radius:50%; border:none; background:var(--paper-2);
-    display:flex; align-items:center; justify-content:center; color:var(--ink);
-  }
-  .icon-btn svg{width:15px; height:15px;}
-  .modal-body{padding:8px 18px 4px;}
-  .field{margin-bottom:16px;}
-  .field label{display:block; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-bottom:7px;}
-  .field input[type=text], .field input[type=number]{
-    width:100%; border:1px solid var(--line); background:#fff; border-radius:11px;
-    padding:12px 14px; font-size:16px; color:var(--ink); outline:none;
-  }
-  .field input:focus{border-color:var(--green);}
+    font-weight:800;
 
-  .photo-picker{
-    width:100%; aspect-ratio:16/10; border-radius:13px; border:1.5px dashed var(--line);
-    background:#fff; display:flex; align-items:center; justify-content:center; position:relative;
-    overflow:hidden; margin-bottom:16px;
-  }
-  .photo-picker img{width:100%; height:100%; object-fit:cover; position:absolute; inset:0;}
-  .photo-picker .ph-placeholder{display:flex; flex-direction:column; align-items:center; gap:7px; color:var(--ink-soft); pointer-events:none;}
-  .photo-picker .ph-placeholder svg{width:30px; height:30px;}
-  .photo-picker .ph-placeholder span{font-size:12.5px; font-weight:600;}
-  .photo-picker input[type=file]{
-    position:absolute; inset:0; opacity:0; cursor:pointer;
-  }
+    color:var(--green-deep);
 
-  .chips{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px;}
-  .chip{
-    display:flex; align-items:center; gap:6px; background:#fff; border:1px solid var(--line);
-    border-radius:8px; padding:6px 8px 6px 6px; font-size:12.5px; font-weight:600;
-    font-variant-numeric:tabular-nums; direction:ltr;
-  }
-  .chip button{
-    border:none; background:var(--paper-2); width:18px; height:18px; border-radius:50%;
-    display:flex; align-items:center; justify-content:center; color:var(--ink-soft); font-size:12px; line-height:1;
-  }
-  .barcode-row{display:flex; gap:8px;}
-  .barcode-row input{
-    flex:1; border:1px solid var(--line); background:#fff; border-radius:11px;
-    padding:11px 12px; font-size:15px; direction:ltr; text-align:right;
-  }
-  .barcode-row button{
-    border:none; border-radius:11px; padding:0 14px; font-size:13px; font-weight:700; color:#fff;
-    white-space:nowrap;
-  }
-  .btn-add-manual{background:var(--ink-soft);}
-  .btn-scan-inline{background:var(--green); display:flex; align-items:center; gap:5px;}
-  .btn-scan-inline svg{width:14px; height:14px;}
-  .hint{font-size:11.5px; color:var(--ink-soft); margin-top:7px; line-height:1.5;}
+    margin:0;
 
-  .modal-footer{
-    padding:14px 18px 4px; display:flex; gap:10px; flex-direction:row-reverse;
-  }
-  .btn-primary, .btn-danger, .btn-secondary{
-    flex:1; border:none; border-radius:12px; padding:14px; font-size:15px; font-weight:800;
-  }
-  .btn-primary{background:var(--green); color:#fff;}
-  .btn-danger{background:#fff; color:var(--red); border:1.5px solid #EFC9C2;}
-  .btn-secondary{background:var(--paper-2); color:var(--ink);}
+}
 
-  /* ---------- Scanner ---------- */
-  .scanner-overlay{
-    position:fixed; inset:0; background:rgba(10,11,8,0.92); z-index:60;
-    display:none; align-items:center; justify-content:center; flex-direction:column;
-    padding:18px; padding-top:calc(18px + env(safe-area-inset-top));
-  }
-  .scanner-overlay.open{display:flex;}
-  .scanner-title{color:#fff; font-size:15px; font-weight:700; margin:0 0 14px;}
-  .scanner-box{
-    position:relative; width:100%; max-width:420px; aspect-ratio:3/4; border-radius:16px;
-    overflow:hidden; background:#000;
-  }
-  #scanner-video{width:100%; height:100%; position:relative;}
-  #scanner-video video, #scanner-video canvas{width:100% !important; height:100% !important; object-fit:cover;}
-  .scan-frame{
-    position:absolute; inset:16%; border:2.5px solid #fff; border-radius:14px;
-    box-shadow:0 0 0 999px rgba(0,0,0,0.35); pointer-events:none;
-  }
-  .scan-hint{color:#EDEEE6; font-size:13px; margin-top:16px; text-align:center; max-width:340px;}
-  .scanner-overlay .btn-secondary{
-    background:#fff; padding:12px; font-size:13.5px;
-  }
+.card-price::after{
 
-  /* ---------- Toast ---------- */
-  #toast{
-    position:fixed; bottom:calc(96px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%) translateY(20px);
-    background:var(--ink); color:#fff; padding:11px 20px; border-radius:30px; font-size:13.5px;
-    font-weight:600; z-index:80; opacity:0; pointer-events:none; transition:all .25s ease;
-    white-space:nowrap;
-  }
-  #toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+    content:" ج.م";
+
+    font-size:11px;
+
+    font-weight:600;
+
+    color:var(--ink-soft);
+
+}
+
+.card-barcount{
+
+    position:absolute;
+
+    top:-30px;
+
+    left:9px;
+
+    background:var(--ink);
+
+    color:#fff;
+
+    font-size:10px;
+
+    font-weight:700;
+
+    padding:3px 7px;
+
+    border-radius:6px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:3px;
+
+}
+
+.card-barcount svg{
+
+    width:10px;
+
+    height:10px;
+
+}
+
+.notch{
+
+    position:absolute;
+
+    top:-7px;
+
+    right:14px;
+
+    width:14px;
+
+    height:14px;
+
+    background:var(--paper);
+
+    border-radius:50%;
+
+    border:1px solid var(--line);
+
+    z-index:2;
+
+}
+
+
+/* ================= EMPTY ================= */
+
+.empty-state{
+
+    grid-column:1/-1;
+
+    text-align:center;
+
+    padding:60px 20px;
+
+    color:var(--ink-soft);
+
+}
+
+.empty-state svg{
+
+    width:64px;
+
+    height:64px;
+
+    margin-bottom:14px;
+
+    color:#C4C9B6;
+
+}
+
+.empty-state p{
+
+    margin:0;
+
+    font-size:14.5px;
+
+    line-height:1.6;
+
+}
+
+.empty-state strong{
+
+    display:block;
+
+    font-size:16.5px;
+
+    color:var(--ink);
+
+    margin-bottom:6px;
+
+}
+
+
+/* ================= FAB ================= */
+
+.fab{
+
+    position:fixed;
+
+    bottom:calc(22px + env(safe-area-inset-bottom));
+
+    left:18px;
+
+    z-index:25;
+
+    width:58px;
+
+    height:58px;
+
+    border-radius:50%;
+
+    border:none;
+
+    background:var(--green);
+
+    color:#fff;
+
+    box-shadow:0 6px 18px rgba(39,78,49,.35);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.fab svg{
+
+    width:26px;
+
+    height:26px;
+
+}
+
+
+/* ================= MODAL ================= */
+
+.modal-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(20,22,16,.5);
+
+    z-index:50;
+
+    display:none;
+
+    align-items:flex-end;
+
+    justify-content:center;
+
+}
+
+.modal-overlay.open{
+
+    display:flex;
+
+}
+
+.modal{
+
+    background:var(--paper);
+
+    width:100%;
+
+    max-width:560px;
+
+    max-height:92vh;
+
+    border-radius:20px 20px 0 0;
+
+    overflow-y:auto;
+
+    padding-bottom:calc(20px + env(safe-area-inset-bottom));
+
+}
+
+.modal-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:16px 18px 6px;
+
+}
+
+.modal-header h2{
+
+    font-size:18px;
+
+    margin:0;
+
+    font-weight:800;
+
+}
+
+.icon-btn{
+
+    width:34px;
+
+    height:34px;
+
+    border-radius:50%;
+
+    border:none;
+
+    background:var(--paper-2);
+
+}
+
+.modal-body{
+
+    padding:8px 18px 4px;
+
+}
+
+.field{
+
+    margin-bottom:16px;
+
+}
+
+.field label{
+
+    display:block;
+
+    font-size:12.5px;
+
+    font-weight:700;
+
+    color:var(--ink-soft);
+
+    margin-bottom:7px;
+
+}
+
+.field input[type=text],
+.field input[type=number]{
+
+    width:100%;
+
+    border:1px solid var(--line);
+
+    background:#fff;
+
+    border-radius:11px;
+
+    padding:12px 14px;
+
+    font-size:16px;
+
+    outline:none;
+
+}
+
+.field input:focus{
+
+    border-color:var(--green);
+
+}
+
+
+/* ================= PHOTO ================= */
+
+.photo-picker{
+
+    width:100%;
+
+    aspect-ratio:16/10;
+
+    border-radius:13px;
+
+    border:1.5px dashed var(--line);
+
+    background:#fff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    position:relative;
+
+    overflow:hidden;
+
+    margin-bottom:16px;
+
+}
+
+.photo-picker img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+    position:absolute;
+
+    inset:0;
+
+}
+
+.photo-picker .ph-placeholder{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:7px;
+
+    color:var(--ink-soft);
+
+}
+
+.photo-picker input[type=file]{
+
+    position:absolute;
+
+    inset:0;
+
+    opacity:0;
+
+    cursor:pointer;
+
+}
+
+
+/* ================= BARCODE ================= */
+
+.chips{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:7px;
+
+    margin-bottom:10px;
+
+}
+
+.chip{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    background:#fff;
+
+    border:1px solid var(--line);
+
+    border-radius:8px;
+
+    padding:6px 8px;
+
+    font-size:12px;
+
+}
+
+.chip button{
+
+    border:none;
+
+    background:var(--paper-2);
+
+    width:18px;
+
+    height:18px;
+
+    border-radius:50%;
+
+}
+
+.barcode-row{
+
+    display:flex;
+
+    gap:8px;
+
+}
+
+.barcode-row input{
+
+    flex:1;
+
+    border:1px solid var(--line);
+
+    border-radius:11px;
+
+    padding:11px;
+
+}
+
+.barcode-row button{
+
+    border:none;
+
+    border-radius:11px;
+
+    padding:0 14px;
+
+    color:#fff;
+
+}
+
+.btn-add-manual{
+
+    background:var(--ink-soft);
+
+}
+
+.btn-scan-inline{
+
+    background:var(--green);
+
+}
+
+.hint{
+
+    font-size:11.5px;
+
+    color:var(--ink-soft);
+
+}
+
+
+/* ================= BUTTONS ================= */
+
+.modal-footer{
+
+    padding:14px 18px 4px;
+
+    display:flex;
+
+    gap:10px;
+
+    flex-direction:row-reverse;
+
+}
+
+.btn-primary,
+.btn-danger,
+.btn-secondary{
+
+    flex:1;
+
+    border:none;
+
+    border-radius:12px;
+
+    padding:14px;
+
+    font-size:15px;
+
+    font-weight:800;
+
+}
+
+.btn-primary{
+
+    background:var(--green);
+
+    color:#fff;
+
+}
+
+.btn-danger{
+
+    background:#fff;
+
+    color:var(--red);
+
+    border:1px solid #EFC9C2;
+
+}
+
+.btn-secondary{
+
+    background:var(--paper-2);
+
+}
+
+
+/* ================= SCANNER ================= */
+
+.scanner-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(10,11,8,.92);
+
+    z-index:60;
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-direction:column;
+
+    padding:18px;
+
+}
+
+.scanner-overlay.open{
+
+    display:flex;
+
+}
+
+.scanner-title{
+
+    color:#fff;
+
+    font-size:15px;
+
+    font-weight:700;
+
+}
+
+.scanner-box{
+
+    position:relative;
+
+    width:100%;
+
+    max-width:420px;
+
+    aspect-ratio:3/4;
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    background:#000;
+
+}
+
+#scanner-video{
+
+    width:100%;
+
+    height:100%;
+
+}
+
+#scanner-video video{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+.scan-frame{
+
+    position:absolute;
+
+    inset:16%;
+
+    border:2px solid #fff;
+
+    border-radius:14px;
+
+}
+
+.scan-hint{
+
+    color:#fff;
+
+    font-size:13px;
+
+    text-align:center;
+
+}
+
+
+/* ================= TOAST ================= */
+
+#toast{
+
+    position:fixed;
+
+    bottom:calc(96px + env(safe-area-inset-bottom));
+
+    left:50%;
+
+    transform:translateX(-50%) translateY(20px);
+
+    background:var(--ink);
+
+    color:#fff;
+
+    padding:11px 20px;
+
+    border-radius:30px;
+
+    font-size:13px;
+
+    z-index:80;
+
+    opacity:0;
+
+    transition:.25s;
+
+}
+
+#toast.show{
+
+    opacity:1;
+
+    transform:translateX(-50%) translateY(0);
+
+}
+
 </style>
+
 </head>
+
+
 <body>
 
+
+<!-- ================= HEADER ================= -->
+
 <header class="topbar">
-  <div class="topbar-row">
-    <div class="logo">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M4 8h16l-1.4 10.4a2 2 0 0 1-2 1.6H7.4a2 2 0 0 1-2-1.6L4 8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 8V6a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.7"/></svg>
-      <h1>منتجاتي</h1>
-    </div>
-    <span class="count-badge" id="countBadge">0 منتج</span>
-  </div>
-  <div class="search-wrap">
-    <input type="text" id="searchInput" placeholder="دور بالاسم أو رقم الباركود...">
-    <svg class="search-ic" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    <button class="scan-search-btn" onclick="capturePhotoForBarcode('search')" title="دور بالباركود">
-      <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M4 7V5a1 1 0 0 1 1-1h2M20 7V5a1 1 0 0 0-1-1h-2M4 17v2a1 1 0 0 0 1 1h2M20 17v2a1 1 0 0 1-1 1h-2M4 12h16" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
-    </button>
-  </div>
-  <div style="text-align:left; margin-top:6px;">
-    <button type="button" onclick="openScanner('search')" style="border:none; background:none; color:var(--ink-soft); font-size:11.5px; font-weight:600; text-decoration:underline; padding:2px;">أو جرّب المسح المباشر بالفيديو</button>
-  </div>
+
+<div class="topbar-row">
+
+<div class="logo">
+
+<svg viewBox="0 0 24 24" fill="none">
+
+<path d="M4 8h16l-1.4 10.4a2 2 0 0 1-2 1.6H7.4a2 2 0 0 1-2-1.6L4 8Z"
+stroke="currentColor"
+stroke-width="1.7"/>
+
+</svg>
+
+<h1>منتجاتي</h1>
+
+</div>
+
+<span class="count-badge" id="countBadge">
+
+0 منتج
+
+</span>
+
+</div>
+
+
+<div class="search-wrap">
+
+<input
+type="text"
+id="searchInput"
+placeholder="دور بالاسم أو رقم الباركود..."
+>
+
+<svg class="search-ic"
+viewBox="0 0 24 24"
+fill="none">
+
+<circle cx="11" cy="11" r="7"
+stroke="currentColor"
+stroke-width="2"/>
+
+<path d="m20 20-3.5-3.5"
+stroke="currentColor"
+stroke-width="2"/>
+
+</svg>
+
+
+<button
+class="scan-search-btn"
+onclick="capturePhotoForBarcode('search')">
+
+📷
+
+</button>
+
+</div>
+
+
+<div style="text-align:left;margin-top:6px;">
+
+<button
+type="button"
+onclick="openScanner('search')"
+style="border:none;background:none;color:#565C4E;font-size:11px;text-decoration:underline;">
+
+أو جرّب المسح المباشر بالفيديو
+
+</button>
+
+</div>
+
 </header>
+
+
+<!-- ================= PRODUCTS ================= -->
 
 <main id="grid"></main>
 
+
+<!-- ================= ADD BUTTON ================= -->
+
 <button class="fab" onclick="openProductModal()">
-  <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+
+<svg viewBox="0 0 24 24" fill="none">
+
+<path
+d="M12 5v14M5 12h14"
+stroke="currentColor"
+stroke-width="2.4"
+stroke-linecap="round"/>
+
+</svg>
+
 </button>
 
-<!-- Product add/edit modal -->
+
+<!-- ================= PRODUCT MODAL ================= -->
+
 <div class="modal-overlay" id="productModalOverlay">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 id="modalTitle">إضافة منتج</h2>
-      <button class="icon-btn" onclick="closeProductModal()">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="photo-picker" id="photoPicker">
-        <img id="photoPreview" style="display:none;">
-        <div class="ph-placeholder" id="photoPlaceholder">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M4 8h16l-1.4 10.4a2 2 0 0 1-2 1.6H7.4a2 2 0 0 1-2-1.6L4 8Z" stroke="currentColor" stroke-width="1.6"/><path d="M8 8V6a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.6"/></svg>
-          <span>اضغط لإضافة صورة المنتج</span>
-        </div>
-        <input type="file" accept="image/*" capture="environment" id="photoInput" onchange="handlePhoto(event)">
-      </div>
 
-      <div class="field">
-        <label>اسم المنتج</label>
-        <input type="text" id="nameInput" placeholder="مثال: زيت عافية 1 لتر">
-      </div>
-      <div class="field">
-        <label>السعر (ج.م)</label>
-        <input type="number" id="priceInput" inputmode="decimal" placeholder="0">
-      </div>
-      <div class="field">
-        <label>أرقام الباركود</label>
-        <div class="chips" id="barcodeChips"></div>
-        <div class="barcode-row">
-          <input type="text" id="barcodeManualInput" inputmode="numeric" placeholder="اكتب الرقم يدويًا">
-          <button type="button" class="btn-add-manual" onclick="addManualBarcode()">إضافة</button>
-        </div>
-        <div class="barcode-row" style="margin-top:8px;">
-          <button type="button" class="btn-scan-inline" style="flex:1; justify-content:center;" onclick="capturePhotoForBarcode('add')">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M4 7V5a1 1 0 0 1 1-1h2M20 7V5a1 1 0 0 0-1-1h-2M4 17v2a1 1 0 0 0 1 1h2M20 17v2a1 1 0 0 1-1 1h-2M4 12h16" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
-            صوّر الباركود
-          </button>
-        </div>
-        <p style="text-align:center; margin:6px 0 0;">
-          <button type="button" onclick="openScanner('add')" style="border:none; background:none; color:var(--ink-soft); font-size:11.5px; font-weight:600; text-decoration:underline; padding:2px;">أو جرّب المسح المباشر بالفيديو</button>
-        </p>
-        <p class="hint">تقدر تضيف أكتر من باركود لنفس المنتج — مفيد لو نفس الصنف بيجيلك بأكتر من نوع تغليف أو من أكتر من مورد.</p>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-primary" onclick="saveProduct()">حفظ المنتج</button>
-      <button class="btn-danger" id="deleteBtn" onclick="deleteProduct()" style="display:none;">حذف</button>
-    </div>
-  </div>
+<div class="modal">
+
+<div class="modal-header">
+
+<h2 id="modalTitle">
+
+إضافة منتج
+
+</h2>
+
+<button
+class="icon-btn"
+onclick="closeProductModal()">
+
+✕
+
+</button>
+
 </div>
 
-<!-- Scanner modal -->
-<div class="scanner-overlay" id="scannerOverlay">
-  <p class="scanner-title" id="scannerTitle">وجّه الكاميرا ناحية الباركود</p>
-  <div class="scanner-box" id="scannerBox" onclick="tapToFocus(event)">
-    <div id="scanner-video"></div>
-    <div class="scan-frame"></div>
-  </div>
-  <p class="scan-hint">لو الصورة مش واضحة، دوس على الشاشة أو ابعد وقرّب شوية عشان الكاميرا تظبط نفسها</p>
-  <div style="display:flex; gap:10px; width:100%; max-width:420px; margin-top:14px;">
-    <button class="btn-secondary" style="flex:1;" onclick="restartCamera()">🔄 إعادة ضبط الكاميرا</button>
-    <button class="btn-secondary" style="flex:1;" onclick="closeScanner()">إلغاء</button>
-  </div>
+
+<div class="modal-body">
+
+
+<div class="photo-picker">
+
+<img id="photoPreview" style="display:none;">
+
+<div class="ph-placeholder" id="photoPlaceholder">
+
+<span>📷</span>
+
+<span>اضغط لإضافة صورة المنتج</span>
+
 </div>
 
-<input type="file" accept="image/*" capture="environment" id="barcodePhotoInput" style="display:none;" onchange="handleBarcodePhotoCapture(event)">
+
+<input
+type="file"
+accept="image/*"
+capture="environment"
+id="photoInput"
+onchange="handlePhoto(event)"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>اسم المنتج</label>
+
+<input
+type="text"
+id="nameInput"
+placeholder="مثال: زيت عافية 1 لتر"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>السعر (ج.م)</label>
+
+<input
+type="number"
+id="priceInput"
+inputmode="decimal"
+placeholder="0"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>أرقام الباركود</label>
+
+
+<div
+class="chips"
+id="barcodeChips">
+
+</div>
+
+
+<div class="barcode-row">
+
+<input
+type="text"
+id="barcodeManualInput"
+placeholder="اكتب الرقم يدويًا"
+>
+
+<button
+type="button"
+class="btn-add-manual"
+onclick="addManualBarcode()">
+
+إضافة
+
+</button>
+
+</div>
+
+
+<div class="barcode-row"
+style="margin-top:8px;">
+
+<button
+type="button"
+class="btn-scan-inline"
+style="flex:1;"
+onclick="capturePhotoForBarcode('add')">
+
+📷 تصوير الباركود
+
+</button>
+
+</div>
+
+
+<p style="text-align:center;">
+
+<button
+type="button"
+onclick="openScanner('add')"
+style="border:none;background:none;color:#565C4E;text-decoration:underline;">
+
+أو جرّب المسح المباشر بالفيديو
+
+</button>
+
+</p>
+
+
+<p class="hint">
+
+تقدر تضيف أكتر من باركود لنفس المنتج.
+
+</p>
+
+
+</div>
+
+</div>
+
+
+<div class="modal-footer">
+
+<button
+class="btn-primary"
+onclick="saveProduct()">
+
+حفظ المنتج
+
+</button>
+
+
+<button
+class="btn-danger"
+id="deleteBtn"
+onclick="deleteProduct()"
+style="display:none;">
+
+حذف
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ================= SCANNER ================= -->
+
+<div
+class="scanner-overlay"
+id="scannerOverlay">
+
+<p
+class="scanner-title"
+id="scannerTitle">
+
+وجّه الكاميرا ناحية الباركود
+
+</p>
+
+
+<div
+class="scanner-box"
+onclick="tapToFocus()">
+
+<div id="scanner-video"></div>
+
+<div class="scan-frame"></div>
+
+</div>
+
+
+<p class="scan-hint">
+
+وجّه الكاميرا ناحية الباركود بوضوح
+
+</p>
+
+
+<div
+style="display:flex;gap:10px;width:100%;max-width:420px;">
+
+<button
+class="btn-secondary"
+onclick="restartCamera()">
+
+🔄 إعادة ضبط
+
+</button>
+
+
+<button
+class="btn-secondary"
+onclick="closeScanner()">
+
+إلغاء
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- PHOTO BARCODE INPUT -->
+
+<input
+type="file"
+accept="image/*"
+capture="environment"
+id="barcodePhotoInput"
+style="display:none;"
+onchange="handleBarcodePhotoCapture(event)"
+>
+
 
 <div id="toast"></div>
 
+
+
+<!-- ================================================= -->
+<!-- ================= JAVASCRIPT ==================== -->
+<!-- ================================================= -->
+
 <script>
-const STORAGE_KEY = 'skm-products';
+
+
+/* ================= SUPABASE ================= */
+
+const SUPABASE_URL =
+'https://abraxozrvnigjoglfeso.supabase.co';
+
+const SUPABASE_ANON_KEY =
+'sb_publishable_z7A1NcoJbLh2BsP3vEwMvw_HNphWm7N';
+
+
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+
+
+/* ================= VARIABLES ================= */
+
 let products = [];
+
 let editingId = null;
+
 let currentBarcodes = [];
-let scannerMode = null; // 'add' | 'search'
 
-const groceryPlaceholder = `<svg viewBox="0 0 24 24" fill="none"><path d="M4 8h16l-1.4 10.4a2 2 0 0 1-2 1.6H7.4a2 2 0 0 1-2-1.6L4 8Z" stroke="currentColor" stroke-width="1.5"/><path d="M8 8V6a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.5"/></svg>`;
-const barcodeIcon = `<svg viewBox="0 0 24 24" fill="none"><path d="M4 7V5a1 1 0 0 1 1-1h2M20 7V5a1 1 0 0 0-1-1h-2M4 17v2a1 1 0 0 0 1 1h2M20 17v2a1 1 0 0 1-1 1h-2M4 12h16" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+let scannerMode = null;
 
-function escapeHtml(s){
-  return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-function toast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(()=> t.classList.remove('show'), 2200);
-}
-
-async function loadProducts(){
-  try{
-    const res = await window.storage.get(STORAGE_KEY, false);
-    products = res && res.value ? JSON.parse(res.value) : [];
-  }catch(e){
-    products = [];
-  }
-  render();
-}
-
-async function saveProducts(){
-  try{
-    await window.storage.set(STORAGE_KEY, JSON.stringify(products), false);
-  }catch(e){
-    toast('حصلت مشكلة في الحفظ');
-  }
-}
-
-function render(){
-  const grid = document.getElementById('grid');
-  const q = document.getElementById('searchInput').value.trim().toLowerCase();
-  const filtered = !q ? products : products.filter(p =>
-    p.name.toLowerCase().includes(q) || p.barcodes.some(b => b.includes(q))
-  );
-
-  document.getElementById('countBadge').textContent = products.length + (products.length === 1 ? ' منتج' : ' منتج');
-
-  if(filtered.length === 0){
-    grid.innerHTML = `<div class="empty-state">
-      ${groceryPlaceholder.replace('<svg', '<svg style="width:64px;height:64px;"')}
-      <strong>${products.length === 0 ? 'لسه مفيش منتجات' : 'مفيش نتائج'}</strong>
-      <p>${products.length === 0 ? 'دوس على زرار (+) وضيف أول منتج في المخزن' : 'جرّب كلمة تانية أو امسح الباركود مباشرة'}</p>
-    </div>`;
-    return;
-  }
-
-  grid.innerHTML = filtered.map(p => `
-    <div class="card" onclick="openProductModal('${p.id}')">
-      <div class="card-photo">
-        ${p.barcodes.length ? `<div class="card-barcount">${barcodeIcon}${p.barcodes.length}</div>` : ''}
-        <div class="notch"></div>
-        ${p.photo ? `<img src="${p.photo}" alt="">` : groceryPlaceholder}
-      </div>
-      <div class="card-info">
-        <p class="card-name">${escapeHtml(p.name)}</p>
-        <p class="card-price">${p.price}</p>
-      </div>
-    </div>
-  `).join('');
-}
-
-document.getElementById('searchInput').addEventListener('input', render);
-
-/* ---------- Product modal ---------- */
-function openProductModal(id){
-  editingId = id || null;
-  const overlay = document.getElementById('productModalOverlay');
-  const deleteBtn = document.getElementById('deleteBtn');
-
-  if(id){
-    const p = products.find(x => x.id === id);
-    document.getElementById('modalTitle').textContent = 'تعديل المنتج';
-    document.getElementById('nameInput').value = p.name;
-    document.getElementById('priceInput').value = p.price;
-    currentBarcodes = [...p.barcodes];
-    setPhotoPreview(p.photo);
-    deleteBtn.style.display = 'block';
-  }else{
-    document.getElementById('modalTitle').textContent = 'إضافة منتج';
-    document.getElementById('nameInput').value = '';
-    document.getElementById('priceInput').value = '';
-    currentBarcodes = [];
-    setPhotoPreview(null);
-    deleteBtn.style.display = 'none';
-  }
-  document.getElementById('barcodeManualInput').value = '';
-  renderChips();
-  overlay.classList.add('open');
-}
-
-function closeProductModal(){
-  document.getElementById('productModalOverlay').classList.remove('open');
-}
-
-function setPhotoPreview(src){
-  const img = document.getElementById('photoPreview');
-  const ph = document.getElementById('photoPlaceholder');
-  if(src){
-    img.src = src; img.style.display = 'block'; ph.style.display = 'none';
-    img.dataset.value = src;
-  }else{
-    img.style.display = 'none'; ph.style.display = 'flex'; img.dataset.value = '';
-  }
-}
-
-function handlePhoto(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(ev){
-    const img = new Image();
-    img.onload = function(){
-      // resize to keep storage light
-      const maxW = 640;
-      const scale = Math.min(1, maxW / img.width);
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
-      setPhotoPreview(dataUrl);
-    };
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function renderChips(){
-  const wrap = document.getElementById('barcodeChips');
-  if(currentBarcodes.length === 0){
-    wrap.innerHTML = '<p class="hint" style="margin:0;">مفيش باركودات مضافة لسه</p>';
-    return;
-  }
-  wrap.innerHTML = currentBarcodes.map(b => `
-    <div class="chip">
-      <span>${escapeHtml(b)}</span>
-      <button type="button" onclick="removeBarcode('${b}')">✕</button>
-    </div>
-  `).join('');
-}
-
-function removeBarcode(b){
-  currentBarcodes = currentBarcodes.filter(x => x !== b);
-  renderChips();
-}
-
-function addManualBarcode(){
-  const input = document.getElementById('barcodeManualInput');
-  const val = input.value.trim();
-  if(!val) return;
-  addBarcodeValue(val);
-  input.value = '';
-}
-
-function addBarcodeValue(val){
-  if(currentBarcodes.includes(val)){
-    toast('الباركود ده مضاف بالفعل لنفس المنتج');
-    return;
-  }
-  const clashProduct = editingId
-    ? products.find(p => p.id !== editingId && p.barcodes.includes(val))
-    : products.find(p => p.barcodes.includes(val));
-  if(clashProduct){
-    toast(`الرقم ده متسجل بالفعل على "${clashProduct.name}"`);
-    return;
-  }
-  currentBarcodes.push(val);
-  renderChips();
-  toast('تم إضافة الباركود');
-}
-
-function saveProduct(){
-  const name = document.getElementById('nameInput').value.trim();
-  const price = document.getElementById('priceInput').value;
-  if(!name){ toast('اكتب اسم المنتج'); return; }
-  if(price === '' || Number(price) < 0){ toast('اكتب سعر صحيح'); return; }
-  const photo = document.getElementById('photoPreview').dataset.value || null;
-
-  if(editingId){
-    const p = products.find(x => x.id === editingId);
-    p.name = name; p.price = Number(price); p.photo = photo; p.barcodes = [...currentBarcodes];
-  }else{
-    products.push({
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2,7),
-      name, price: Number(price), photo, barcodes: [...currentBarcodes]
-    });
-  }
-  saveProducts();
-  render();
-  closeProductModal();
-  toast('تم الحفظ');
-}
-
-function deleteProduct(){
-  if(!editingId) return;
-  if(!confirm('متأكد إنك عايز تحذف المنتج ده؟')) return;
-  products = products.filter(p => p.id !== editingId);
-  saveProducts();
-  render();
-  closeProductModal();
-  toast('تم الحذف');
-}
-
-/* ---------- Scanner ----------
-   We manage the camera stream ourselves with getUserMedia and only use
-   Quagga for single-frame decoding (Quagga.decodeSingle). Letting Quagga
-   manage the live camera itself relies on an old shim that throws script
-   errors on iOS Safari, so we avoid that path entirely. */
-let scannerStream = null;
-let scannerVideoEl = null;
-let scannerCanvas = null;
-let scannerCtx = null;
-let scannerActive = false;
-let scannerTimer = null;
-const BARCODE_READERS = ["ean_reader","ean_8_reader","upc_reader","upc_e_reader","code_128_reader","codabar_reader","code_39_reader"];
-
-async function openScanner(mode){
-  scannerMode = mode;
-  document.getElementById('scannerTitle').textContent =
-    mode === 'search' ? 'امسح باركود المنتج للبحث عنه' : 'وجّه الكاميرا ناحية الباركود';
-  document.getElementById('scannerOverlay').classList.add('open');
-
-  const holder = document.getElementById('scanner-video');
-  holder.innerHTML = '<video id="scannerRawVideo" autoplay playsinline muted></video>';
-  scannerVideoEl = document.getElementById('scannerRawVideo');
-
-  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-    toast('المتصفح ده مش بيدعم فتح الكاميرا');
-    closeScanner();
-    return;
-  }
-
-  try{
-    // Higher resolution pushes most phone cameras into their normal
-    // autofocus pipeline instead of a fixed-focus low-res fast path,
-    // and we ask for continuous AF where the browser exposes it
-    // (mainly Chrome/Android — iOS Safari ignores this quietly).
-    scannerStream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: { ideal: 'environment' },
-        width: { ideal: 1920 },
-        height: { ideal: 1080 },
-        advanced: [{ focusMode: 'continuous' }]
-      },
-      audio: false
-    });
-  }catch(e){
-    // Some devices reject the "advanced" hint outright — retry plainly.
-    try{
-      scannerStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
-        audio: false
-      });
-    }catch(e2){
-      toast('محتاج تسمح باستخدام الكاميرا من إعدادات المتصفح');
-      closeScanner();
-      return;
-    }
-  }
-
-  scannerVideoEl.srcObject = scannerStream;
-  try{ await scannerVideoEl.play(); }catch(e){}
-  tryApplyContinuousFocus();
-
-  scannerCanvas = document.createElement('canvas');
-  scannerCtx = scannerCanvas.getContext('2d');
-  scannerActive = true;
-  scanFrame();
-}
-
-function tryApplyContinuousFocus(){
-  if(!scannerStream) return;
-  const track = scannerStream.getVideoTracks()[0];
-  if(!track || !track.getCapabilities) return;
-  try{
-    const caps = track.getCapabilities();
-    if(caps.focusMode && caps.focusMode.includes('continuous')){
-      track.applyConstraints({ advanced: [{ focusMode: 'continuous' }] }).catch(()=>{});
-    }
-  }catch(e){ /* not supported on this browser — ignore quietly */ }
-}
-
-function tapToFocus(){
-  // Most phone browsers (especially iOS Safari) don't expose manual
-  // focus control to the web at all. The reliable cross-device trick
-  // is to briefly stop and restart the camera track, which makes the
-  // hardware redo its autofocus sweep — same effect as closing and
-  // reopening a camera app.
-  restartCamera();
-}
-
-async function restartCamera(){
-  if(!scannerStream) return;
-  toast('بيتم ضبط الكاميرا...');
-  scannerActive = false;
-  if(scannerTimer){ clearTimeout(scannerTimer); scannerTimer = null; }
-  scannerStream.getTracks().forEach(t => t.stop());
-  scannerStream = null;
-  await new Promise(r => setTimeout(r, 200));
-  const mode = scannerMode;
-  await openScanner(mode);
-}
-
-function scanFrame(){
-  if(!scannerActive) return;
-
-  if(scannerVideoEl.readyState >= 2 && scannerVideoEl.videoWidth > 0){
-    // Downscaling before encoding keeps each attempt fast, so we get many
-    // more tries per second — the best way to "catch" a sharp frame when
-    // we can't control focus directly.
-    const targetW = 720;
-    const scale = Math.min(1, targetW / scannerVideoEl.videoWidth);
-    scannerCanvas.width = scannerVideoEl.videoWidth * scale;
-    scannerCanvas.height = scannerVideoEl.videoHeight * scale;
-    scannerCtx.drawImage(scannerVideoEl, 0, 0, scannerCanvas.width, scannerCanvas.height);
-    const dataUrl = scannerCanvas.toDataURL('image/jpeg', 0.8);
-
-    Quagga.decodeSingle({
-      src: dataUrl,
-      numOfWorkers: 0,
-      locate: true,
-      inputStream: { size: scannerCanvas.width },
-      decoder: { readers: BARCODE_READERS }
-    }, function(result){
-      if(!scannerActive) return;
-      if(result && result.codeResult && result.codeResult.code){
-        handleScanResult(result.codeResult.code, scannerMode);
-        closeScanner();
-      }else{
-        scannerTimer = setTimeout(scanFrame, 120);
-      }
-    });
-  }else{
-    scannerTimer = setTimeout(scanFrame, 150);
-  }
-}
-
-function handleScanResult(code, mode){
-  if(mode === 'add'){
-    addBarcodeValue(code);
-  }else if(mode === 'search'){
-    const found = products.find(p => p.barcodes.includes(code));
-    if(found){
-      openProductModal(found.id);
-    }else{
-      document.getElementById('searchInput').value = code;
-      render();
-      toast('مفيش منتج مسجل بالرقم ده');
-    }
-  }
-}
-
-/* ---------- Photo-capture scanning (recommended on iPhone) ----------
-   This opens the device's real camera app via a file input, which has
-   full native autofocus — unlike a live getUserMedia video feed, whose
-   focus the browser can't control on iOS. Take one sharp photo, we
-   decode it once. Far more reliable than the live scanner above. */
 let photoCaptureMode = null;
 
-function capturePhotoForBarcode(mode){
-  photoCaptureMode = mode;
-  const input = document.getElementById('barcodePhotoInput');
-  input.value = '';
-  input.click();
+
+
+/* ================= ICON ================= */
+
+const groceryPlaceholder = `
+
+<svg viewBox="0 0 24 24" fill="none">
+
+<path
+d="M4 8h16l-1.4 10.4a2 2 0 0 1-2 1.6H7.4a2 2 0 0 1-2-1.6L4 8Z"
+stroke="currentColor"
+stroke-width="1.5"/>
+
+<path
+d="M8 8V6a4 4 0 0 1 8 0v2"
+stroke="currentColor"
+stroke-width="1.5"/>
+
+</svg>
+
+`;
+
+
+
+/* ================= ESCAPE HTML ================= */
+
+function escapeHtml(s){
+
+    return (s || '')
+    .replace(/[&<>"']/g,function(c){
+
+        return {
+            '&':'&amp;',
+            '<':'&lt;',
+            '>':'&gt;',
+            '"':'&quot;',
+            "'":'&#39;'
+        }[c];
+
+    });
+
 }
 
-function handleBarcodePhotoCapture(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  toast('بيتم تحليل الصورة...');
 
-  const reader = new FileReader();
-  reader.onload = function(ev){
-    const img = new Image();
-    img.onload = function(){
-      const maxW = 1400;
-      const scale = Math.min(1, maxW / img.width);
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
 
-      Quagga.decodeSingle({
-        src: dataUrl,
-        numOfWorkers: 0,
-        locate: true,
-        inputStream: { size: canvas.width },
-        decoder: { readers: BARCODE_READERS }
-      }, function(result){
-        if(result && result.codeResult && result.codeResult.code){
-          handleScanResult(result.codeResult.code, photoCaptureMode);
-          toast('تم قراءة الباركود بنجاح');
-        }else{
-          toast('مقدرش أقرا رقم من الصورة — جرب تقرّب أكتر أو تحسّن الإضاءة وصوّر تاني');
+/* ================= TOAST ================= */
+
+function toast(msg){
+
+    const t =
+    document.getElementById('toast');
+
+    t.textContent = msg;
+
+    t.classList.add('show');
+
+    clearTimeout(t._timer);
+
+    t._timer =
+    setTimeout(function(){
+
+        t.classList.remove('show');
+
+    },2500);
+
+}
+
+
+
+/* ================================================= */
+/* ================= LOAD PRODUCTS ================= */
+/* ================================================= */
+
+async function loadProducts(){
+
+    try{
+
+        console.log(
+            'Loading products from Supabase...'
+        );
+
+
+        const { data,error } =
+        await supabaseClient
+        .from('products')
+        .select('*')
+        .order('created_at',{
+            ascending:true
+        });
+
+
+        if(error){
+
+            throw error;
+
         }
-      });
-    };
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
+
+
+        products =
+        (data || []).map(function(product){
+
+            return {
+
+                id:String(product.id),
+
+                name:product.name || '',
+
+                price:Number(product.price || 0),
+
+                photo:product.photo || null,
+
+                barcodes:
+                Array.isArray(product.barcodes)
+                ? product.barcodes
+                : []
+
+            };
+
+        });
+
+
+        console.log(
+            'Products loaded successfully:',
+            products
+        );
+
+
+    }
+    catch(error){
+
+        console.error(
+            'LOAD ERROR:',
+            error
+        );
+
+        products=[];
+
+        toast(
+            'مشكلة في الاتصال بقاعدة البيانات'
+        );
+
+    }
+
+
+    render();
+
 }
+
+
+
+/* ================================================= */
+/* ================= RENDER ======================== */
+/* ================================================= */
+
+function render(){
+
+    const grid =
+    document.getElementById('grid');
+
+
+    const q =
+    document
+    .getElementById('searchInput')
+    .value
+    .trim()
+    .toLowerCase();
+
+
+    const filtered = !q
+
+    ? products
+
+    : products.filter(function(p){
+
+        return (
+
+            p.name
+            .toLowerCase()
+            .includes(q)
+
+            ||
+
+            p.barcodes.some(function(b){
+
+                return String(b).includes(q);
+
+            })
+
+        );
+
+    });
+
+
+
+    document
+    .getElementById('countBadge')
+    .textContent =
+    products.length + ' منتج';
+
+
+
+    if(filtered.length === 0){
+
+        grid.innerHTML = `
+
+        <div class="empty-state">
+
+        ${groceryPlaceholder}
+
+        <strong>
+
+        ${
+            products.length === 0
+            ? 'لسه مفيش منتجات'
+            : 'مفيش نتائج'
+        }
+
+        </strong>
+
+        <p>
+
+        ${
+            products.length === 0
+            ? 'دوس على زرار (+) وضيف أول منتج'
+            : 'جرّب البحث بكلمة مختلفة'
+        }
+
+        </p>
+
+        </div>
+
+        `;
+
+        return;
+
+    }
+
+
+
+    grid.innerHTML =
+    filtered.map(function(p){
+
+        return `
+
+        <div
+        class="card"
+        onclick="openProductModal('${p.id}')">
+
+        <div class="card-photo">
+
+        ${
+            p.barcodes.length
+
+            ? `<div class="card-barcount">
+
+            باركود ${p.barcodes.length}
+
+            </div>`
+
+            : ''
+        }
+
+
+        ${
+            p.photo
+
+            ? `<img src="${p.photo}" alt="">`
+
+            : groceryPlaceholder
+        }
+
+
+        </div>
+
+
+        <div class="card-info">
+
+        <p class="card-name">
+
+        ${escapeHtml(p.name)}
+
+        </p>
+
+
+        <p class="card-price">
+
+        ${p.price}
+
+        </p>
+
+        </div>
+
+        </div>
+
+        `;
+
+    }).join('');
+
+}
+
+
+
+/* ================= SEARCH ================= */
+
+document
+.getElementById('searchInput')
+.addEventListener('input',render);
+
+
+
+/* ================================================= */
+/* ================= PRODUCT MODAL ================= */
+/* ================================================= */
+
+function openProductModal(id){
+
+    editingId = id || null;
+
+
+    const overlay =
+    document.getElementById(
+        'productModalOverlay'
+    );
+
+
+    const deleteBtn =
+    document.getElementById(
+        'deleteBtn'
+    );
+
+
+    if(id){
+
+        const p =
+        products.find(function(x){
+
+            return x.id === String(id);
+
+        });
+
+
+        if(!p){
+
+            toast('المنتج غير موجود');
+
+            return;
+
+        }
+
+
+        document
+        .getElementById('modalTitle')
+        .textContent =
+        'تعديل المنتج';
+
+
+        document
+        .getElementById('nameInput')
+        .value =
+        p.name;
+
+
+        document
+        .getElementById('priceInput')
+        .value =
+        p.price;
+
+
+        currentBarcodes =
+        [...p.barcodes];
+
+
+        setPhotoPreview(p.photo);
+
+
+        deleteBtn.style.display =
+        'block';
+
+
+    }
+    else{
+
+
+        document
+        .getElementById('modalTitle')
+        .textContent =
+        'إضافة منتج';
+
+
+        document
+        .getElementById('nameInput')
+        .value = '';
+
+
+        document
+        .getElementById('priceInput')
+        .value = '';
+
+
+        currentBarcodes=[];
+
+
+        setPhotoPreview(null);
+
+
+        deleteBtn.style.display =
+        'none';
+
+    }
+
+
+
+    document
+    .getElementById('barcodeManualInput')
+    .value='';
+
+
+    renderChips();
+
+
+    overlay.classList.add('open');
+
+}
+
+
+
+/* ================= CLOSE MODAL ================= */
+
+function closeProductModal(){
+
+    document
+    .getElementById('productModalOverlay')
+    .classList.remove('open');
+
+}
+
+
+
+/* ================= PHOTO ================= */
+
+function setPhotoPreview(src){
+
+    const img =
+    document.getElementById(
+        'photoPreview'
+    );
+
+
+    const placeholder =
+    document.getElementById(
+        'photoPlaceholder'
+    );
+
+
+    if(src){
+
+        img.src=src;
+
+        img.style.display='block';
+
+        placeholder.style.display='none';
+
+        img.dataset.value=src;
+
+    }
+
+    else{
+
+        img.style.display='none';
+
+        placeholder.style.display='flex';
+
+        img.dataset.value='';
+
+    }
+
+}
+
+
+
+function handlePhoto(e){
+
+    const file =
+    e.target.files[0];
+
+
+    if(!file){
+
+        return;
+
+    }
+
+
+    const reader =
+    new FileReader();
+
+
+    reader.onload =
+    function(ev){
+
+
+        const img =
+        new Image();
+
+
+        img.onload =
+        function(){
+
+
+            const maxW = 640;
+
+
+            const scale =
+            Math.min(
+                1,
+                maxW / img.width
+            );
+
+
+            const canvas =
+            document.createElement('canvas');
+
+
+            canvas.width =
+            img.width * scale;
+
+
+            canvas.height =
+            img.height * scale;
+
+
+            const ctx =
+            canvas.getContext('2d');
+
+
+            ctx.drawImage(
+                img,
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            const dataUrl =
+            canvas.toDataURL(
+                'image/jpeg',
+                .75
+            );
+
+
+            setPhotoPreview(dataUrl);
+
+        };
+
+
+        img.src =
+        ev.target.result;
+
+    };
+
+
+    reader.readAsDataURL(file);
+
+}
+
+
+
+/* ================================================= */
+/* ================= BARCODES ====================== */
+/* ================================================= */
+
+function renderChips(){
+
+    const wrap =
+    document.getElementById(
+        'barcodeChips'
+    );
+
+
+    if(currentBarcodes.length === 0){
+
+        wrap.innerHTML =
+
+        `<p class="hint">
+
+        مفيش باركودات مضافة لسه
+
+        </p>`;
+
+        return;
+
+    }
+
+
+    wrap.innerHTML =
+    currentBarcodes.map(function(b){
+
+        return `
+
+        <div class="chip">
+
+        <span>
+
+        ${escapeHtml(b)}
+
+        </span>
+
+
+        <button
+        type="button"
+        onclick="removeBarcode('${b}')">
+
+        ✕
+
+        </button>
+
+        </div>
+
+        `;
+
+    }).join('');
+
+}
+
+
+
+function removeBarcode(b){
+
+    currentBarcodes =
+    currentBarcodes.filter(function(x){
+
+        return x !== b;
+
+    });
+
+
+    renderChips();
+
+}
+
+
+
+function addManualBarcode(){
+
+    const input =
+    document.getElementById(
+        'barcodeManualInput'
+    );
+
+
+    const val =
+    input.value.trim();
+
+
+    if(!val){
+
+        return;
+
+    }
+
+
+    addBarcodeValue(val);
+
+
+    input.value='';
+
+}
+
+
+
+function addBarcodeValue(val){
+
+    if(currentBarcodes.includes(val)){
+
+        toast(
+            'الباركود ده موجود بالفعل'
+        );
+
+        return;
+
+    }
+
+
+    const clashProduct =
+    editingId
+
+    ? products.find(function(p){
+
+        return (
+            p.id !== editingId
+            &&
+            p.barcodes.includes(val)
+        );
+
+    })
+
+    : products.find(function(p){
+
+        return p.barcodes.includes(val);
+
+    });
+
+
+
+    if(clashProduct){
+
+        toast(
+            'الباركود مسجل لمنتج آخر'
+        );
+
+        return;
+
+    }
+
+
+    currentBarcodes.push(val);
+
+
+    renderChips();
+
+
+    toast('تم إضافة الباركود');
+
+}
+
+
+
+/* ================================================= */
+/* ================= SAVE PRODUCT ================== */
+/* ================================================= */
+
+async function saveProduct(){
+
+
+    const name =
+    document
+    .getElementById('nameInput')
+    .value
+    .trim();
+
+
+    const price =
+    document
+    .getElementById('priceInput')
+    .value;
+
+
+    if(!name){
+
+        toast('اكتب اسم المنتج');
+
+        return;
+
+    }
+
+
+    if(
+        price === ''
+        ||
+        Number(price) < 0
+    ){
+
+        toast('اكتب سعر صحيح');
+
+        return;
+
+    }
+
+
+    const photo =
+    document
+    .getElementById('photoPreview')
+    .dataset.value
+    || null;
+
+
+    try{
+
+
+        /* ========= UPDATE ========= */
+
+        if(editingId){
+
+
+            const { error } =
+            await supabaseClient
+
+            .from('products')
+
+            .update({
+
+                name:name,
+
+                price:Number(price),
+
+                photo:photo,
+
+                barcodes:
+                [...currentBarcodes]
+
+            })
+
+            .eq(
+                'id',
+                editingId
+            );
+
+
+            if(error){
+
+                throw error;
+
+            }
+
+
+            toast(
+                'تم تعديل المنتج بنجاح'
+            );
+
+
+        }
+
+
+        /* ========= INSERT ========= */
+
+        else{
+
+
+            const newId =
+            Date.now()
+            .toString(36)
+            +
+            Math.random()
+            .toString(36)
+            .slice(2,7);
+
+
+            const { error } =
+            await supabaseClient
+
+            .from('products')
+
+            .insert({
+
+                id:newId,
+
+                name:name,
+
+                price:Number(price),
+
+                photo:photo,
+
+                barcodes:
+                [...currentBarcodes]
+
+            });
+
+
+            if(error){
+
+                throw error;
+
+            }
+
+
+            toast(
+                'تم حفظ المنتج بنجاح'
+            );
+
+        }
+
+
+
+        await loadProducts();
+
+
+        closeProductModal();
+
+
+    }
+
+    catch(error){
+
+
+        console.error(
+            'SAVE ERROR:',
+            error
+        );
+
+
+        toast(
+            'حصلت مشكلة أثناء الحفظ'
+        );
+
+    }
+
+}
+
+
+
+/* ================================================= */
+/* ================= DELETE ======================== */
+/* ================================================= */
+
+async function deleteProduct(){
+
+
+    if(!editingId){
+
+        return;
+
+    }
+
+
+    const confirmDelete =
+    confirm(
+        'متأكد إنك عايز تحذف المنتج ده؟'
+    );
+
+
+    if(!confirmDelete){
+
+        return;
+
+    }
+
+
+    try{
+
+
+        const { error } =
+        await supabaseClient
+
+        .from('products')
+
+        .delete()
+
+        .eq(
+            'id',
+            editingId
+        );
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        await loadProducts();
+
+
+        closeProductModal();
+
+
+        toast('تم حذف المنتج');
+
+
+    }
+
+    catch(error){
+
+
+        console.error(
+            'DELETE ERROR:',
+            error
+        );
+
+
+        toast(
+            'حصلت مشكلة أثناء الحذف'
+        );
+
+    }
+
+}
+
+
+
+/* ================================================= */
+/* ================= SCANNER ======================= */
+/* ================================================= */
+
+let scannerStream = null;
+
+let scannerVideoEl = null;
+
+let scannerCanvas = null;
+
+let scannerCtx = null;
+
+let scannerActive = false;
+
+let scannerTimer = null;
+
+
+const BARCODE_READERS = [
+
+    "ean_reader",
+
+    "ean_8_reader",
+
+    "upc_reader",
+
+    "upc_e_reader",
+
+    "code_128_reader",
+
+    "codabar_reader",
+
+    "code_39_reader"
+
+];
+
+
+
+async function openScanner(mode){
+
+
+    scannerMode=mode;
+
+
+    document
+    .getElementById('scannerTitle')
+    .textContent =
+
+    mode === 'search'
+
+    ? 'امسح باركود المنتج للبحث عنه'
+
+    : 'وجّه الكاميرا ناحية الباركود';
+
+
+
+    document
+    .getElementById('scannerOverlay')
+    .classList.add('open');
+
+
+
+    const holder =
+    document.getElementById(
+        'scanner-video'
+    );
+
+
+    holder.innerHTML =
+
+    `<video
+    id="scannerRawVideo"
+    autoplay
+    playsinline
+    muted>
+    </video>`;
+
+
+    scannerVideoEl =
+    document.getElementById(
+        'scannerRawVideo'
+    );
+
+
+
+    try{
+
+
+        scannerStream =
+        await navigator
+        .mediaDevices
+        .getUserMedia({
+
+            video:{
+
+                facingMode:{
+                    ideal:'environment'
+                },
+
+                width:{
+                    ideal:1920
+                },
+
+                height:{
+                    ideal:1080
+                }
+
+            },
+
+            audio:false
+
+        });
+
+
+    }
+
+    catch(error){
+
+
+        console.error(error);
+
+
+        toast(
+            'محتاج تسمح باستخدام الكاميرا'
+        );
+
+
+        closeScanner();
+
+
+        return;
+
+    }
+
+
+
+    scannerVideoEl.srcObject =
+    scannerStream;
+
+
+    await scannerVideoEl.play();
+
+
+    scannerCanvas =
+    document.createElement('canvas');
+
+
+    scannerCtx =
+    scannerCanvas.getContext('2d');
+
+
+    scannerActive=true;
+
+
+    scanFrame();
+
+}
+
+
+
+function scanFrame(){
+
+
+    if(!scannerActive){
+
+        return;
+
+    }
+
+
+    if(
+        scannerVideoEl
+        &&
+        scannerVideoEl.readyState >= 2
+    ){
+
+
+        scannerCanvas.width =
+        scannerVideoEl.videoWidth;
+
+
+        scannerCanvas.height =
+        scannerVideoEl.videoHeight;
+
+
+        scannerCtx.drawImage(
+
+            scannerVideoEl,
+
+            0,
+
+            0,
+
+            scannerCanvas.width,
+
+            scannerCanvas.height
+
+        );
+
+
+        const dataUrl =
+        scannerCanvas.toDataURL(
+            'image/jpeg',
+            .8
+        );
+
+
+
+        Quagga.decodeSingle({
+
+            src:dataUrl,
+
+            numOfWorkers:0,
+
+            locate:true,
+
+            inputStream:{
+                size:720
+            },
+
+            decoder:{
+                readers:BARCODE_READERS
+            }
+
+        },
+
+
+        function(result){
+
+
+            if(!scannerActive){
+
+                return;
+
+            }
+
+
+            if(
+
+                result
+
+                &&
+
+                result.codeResult
+
+                &&
+
+                result.codeResult.code
+
+            ){
+
+
+                handleScanResult(
+
+                    result.codeResult.code,
+
+                    scannerMode
+
+                );
+
+
+                closeScanner();
+
+
+            }
+
+            else{
+
+
+                scannerTimer =
+                setTimeout(
+                    scanFrame,
+                    150
+                );
+
+            }
+
+        });
+
+    }
+
+    else{
+
+
+        scannerTimer =
+        setTimeout(
+            scanFrame,
+            150
+        );
+
+    }
+
+}
+
+
+
+function handleScanResult(code,mode){
+
+
+    if(mode === 'add'){
+
+
+        addBarcodeValue(code);
+
+
+    }
+
+
+    else if(mode === 'search'){
+
+
+        const found =
+        products.find(function(p){
+
+            return p.barcodes.includes(code);
+
+        });
+
+
+
+        if(found){
+
+
+            openProductModal(
+                found.id
+            );
+
+
+        }
+
+        else{
+
+
+            document
+            .getElementById('searchInput')
+            .value=code;
+
+
+            render();
+
+
+            toast(
+                'مفيش منتج مسجل بالرقم ده'
+            );
+
+        }
+
+    }
+
+}
+
+
+
+function tapToFocus(){
+
+    restartCamera();
+
+}
+
+
+
+async function restartCamera(){
+
+
+    if(scannerStream){
+
+
+        scannerActive=false;
+
+
+        scannerStream
+        .getTracks()
+        .forEach(function(track){
+
+            track.stop();
+
+        });
+
+
+        scannerStream=null;
+
+
+        await new Promise(function(resolve){
+
+            setTimeout(resolve,300);
+
+        });
+
+
+        openScanner(scannerMode);
+
+    }
+
+}
+
+
 
 function closeScanner(){
-  document.getElementById('scannerOverlay').classList.remove('open');
-  scannerActive = false;
-  if(scannerTimer){ clearTimeout(scannerTimer); scannerTimer = null; }
-  if(scannerStream){
-    scannerStream.getTracks().forEach(t => t.stop());
-    scannerStream = null;
-  }
+
+
+    document
+    .getElementById('scannerOverlay')
+    .classList.remove('open');
+
+
+    scannerActive=false;
+
+
+    if(scannerTimer){
+
+        clearTimeout(scannerTimer);
+
+        scannerTimer=null;
+
+    }
+
+
+    if(scannerStream){
+
+
+        scannerStream
+        .getTracks()
+        .forEach(function(track){
+
+            track.stop();
+
+        });
+
+
+        scannerStream=null;
+
+    }
+
 }
 
+
+
+/* ================================================= */
+/* ========== PHOTO BARCODE SCANNER ================= */
+/* ================================================= */
+
+function capturePhotoForBarcode(mode){
+
+
+    photoCaptureMode=mode;
+
+
+    const input =
+    document.getElementById(
+        'barcodePhotoInput'
+    );
+
+
+    input.value='';
+
+
+    input.click();
+
+}
+
+
+
+function handleBarcodePhotoCapture(e){
+
+
+    const file =
+    e.target.files[0];
+
+
+    if(!file){
+
+        return;
+
+    }
+
+
+    toast(
+        'بيتم تحليل الصورة...'
+    );
+
+
+    const reader =
+    new FileReader();
+
+
+
+    reader.onload =
+    function(ev){
+
+
+        const img =
+        new Image();
+
+
+
+        img.onload =
+        function(){
+
+
+            const maxW=1400;
+
+
+            const scale =
+            Math.min(
+                1,
+                maxW/img.width
+            );
+
+
+            const canvas =
+            document.createElement('canvas');
+
+
+            canvas.width =
+            img.width*scale;
+
+
+            canvas.height =
+            img.height*scale;
+
+
+            const ctx =
+            canvas.getContext('2d');
+
+
+            ctx.drawImage(
+
+                img,
+
+                0,
+
+                0,
+
+                canvas.width,
+
+                canvas.height
+
+            );
+
+
+            const dataUrl =
+            canvas.toDataURL(
+                'image/jpeg',
+                .9
+            );
+
+
+
+            Quagga.decodeSingle({
+
+                src:dataUrl,
+
+                numOfWorkers:0,
+
+                locate:true,
+
+                inputStream:{
+                    size:canvas.width
+                },
+
+                decoder:{
+                    readers:BARCODE_READERS
+                }
+
+            },
+
+
+            function(result){
+
+
+                if(
+
+                    result
+
+                    &&
+
+                    result.codeResult
+
+                    &&
+
+                    result.codeResult.code
+
+                ){
+
+
+                    handleScanResult(
+
+                        result.codeResult.code,
+
+                        photoCaptureMode
+
+                    );
+
+
+                    toast(
+                        'تم قراءة الباركود بنجاح'
+                    );
+
+
+                }
+
+                else{
+
+
+                    toast(
+                        'مقدرش أقرا الباركود من الصورة'
+                    );
+
+                }
+
+            });
+
+        };
+
+
+        img.src =
+        ev.target.result;
+
+    };
+
+
+    reader.readAsDataURL(file);
+
+}
+
+
+
+/* ================================================= */
+/* ================= START APP ===================== */
+/* ================================================= */
+
+console.log(
+    'Starting Bahnas Products App...'
+);
+
+
 loadProducts();
+
+
 </script>
+
+
 </body>
+
 </html>
